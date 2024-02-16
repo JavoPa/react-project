@@ -1,13 +1,16 @@
 const bcrypt = require('bcrypt');
-const db = require('../config/db'); // Asegúrate de que la ruta al archivo db.js es correcta
+const { db } = require('../config/db'); // Asegúrate de que la ruta al archivo db.js es correcta
 
 exports.createUser = function(username, password) {
-  return db.query('INSERT INTO usuarios (nombre, password) VALUES (?, ?)', [username, password]);
+  return bcrypt.hash(password, 10)
+    .then(hashedPassword => {
+      return db.query('INSERT INTO usuarios (nombre, password) VALUES (?, ?)', [username, hashedPassword]);
+    });
 };
 
 exports.findUserByName = function(username) {
   return db.query('SELECT id, nombre, password FROM usuarios WHERE nombre = ?', [username])
-    .then(([results, fields]) => {
+    .then(([results]) => {
       if (results.length > 0) {
         return results[0]; // Devuelve el usuario encontrado
       } else {

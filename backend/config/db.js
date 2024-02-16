@@ -28,7 +28,7 @@ pool.getConnection((err, connection) => {
   }
 });
 
-const promisePool = pool.promise();
+const db = pool.promise();
 
 async function setupDB() {
   try {
@@ -46,4 +46,4 @@ async function setupDB() {
   }
 }
 
-module.exports = {setupDB, promisePool};
+module.exports = {setupDB, db};
